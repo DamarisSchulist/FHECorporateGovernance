@@ -10,7 +10,6 @@ A secure and private corporate governance solution for board resolutions using a
 
 **Contract Address**: `0x13116d08546b78F5fDB7fA4544f778885B19A441`
 **Network**: Sepolia Testnet
-**Etherscan**: [View Contract on Etherscan](https://sepolia.etherscan.io/address/0x13116d08546b78F5fDB7fA4544f778885B19A441)
 **Status**: Verified and Live with FHE encryption
 
 ## Core Concepts
