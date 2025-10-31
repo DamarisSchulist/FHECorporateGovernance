@@ -1,51 +1,11 @@
 {
   "name": "corporate-governance-system",
   "version": "1.0.0",
-  "description": "Privacy-Preserving Board Resolution System using FHE Technology",
-  "main": "index.html",
+  "description": "Corporate Governance Board Resolution System",
   "scripts": {
-    "build": "hardhat compile",
-    "start": "npx http-server . -p 3000 -c-1 --cors",
-    "dev": "npx http-server . -p 3000 -c-1 --cors -o",
-    "compile": "hardhat compile",
-    "test": "hardhat test",
-    "deploy": "hardhat run scripts/deploy.js --network sepolia",
-    "verify": "hardhat run scripts/verify.js --network sepolia",
-    "interact": "hardhat run scripts/interact.js --network sepolia",
-    "simulate": "hardhat run scripts/simulate.js --network sepolia",
-    "setup": "npm install && echo '✅ Setup complete! Run npm run dev to start'"
+    "build": "echo 'Static site ready'",
+    "start": "echo 'Served by Vercel'"
   },
-  "keywords": [
-    "fhevm",
-    "fhe",
-    "blockchain",
-    "privacy",
-    "encryption",
-    "governance",
-    "voting",
-    "corporate",
-    "web3",
-    "solidity",
-    "hardhat"
-  ],
-  "author": "Developer Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/your-org/corporate-governance.git"
-  },
-  "homepage": "https://corporate-governance.vercel.app/",
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.0",
-    "hardhat": "^2.19.0",
-    "dotenv": "^16.0.0"
-  },
-  "dependencies": {
-    "http-server": "^14.1.1"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  }
+  "keywords": ["governance", "voting", "corporate", "blockchain"],
+  "license": "MIT"
 }

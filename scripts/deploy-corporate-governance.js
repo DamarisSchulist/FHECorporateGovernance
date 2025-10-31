@@ -4,7 +4,7 @@ async function main() {
     console.log("Deploying Board Resolution System to Sepolia...");
 
     // Get the contract factory
-    const BoardResolution = await ethers.getContractFactory("CorporateGovernance");
+    const BoardResolution = await ethers.getContractFactory("UltraSimpleVoting");
 
     // Deploy the contract
     const boardResolution = await BoardResolution.deploy();

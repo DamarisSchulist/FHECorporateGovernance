@@ -1,0 +1,20 @@
+{
+  "name": "board-resolution-system",
+  "version": "1.0.0",
+  "description": "Private Corporate Governance Board Resolution System with FHE encryption",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'Build complete - static files ready'"
+  },
+  "keywords": ["board", "governance", "FHE", "voting", "privacy"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {}
+}
