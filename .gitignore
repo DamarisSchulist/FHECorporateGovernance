@@ -1,0 +1,167 @@
+# Hello FHEVM Tutorial - Git Ignore Configuration
+
+# ===========================================
+# SECURITY: Never commit sensitive data!
+# ===========================================
+
+# Environment variables with private keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Private keys and mnemonics
+*.key
+*.pem
+mnemonic.txt
+private-key.txt
+
+# ===========================================
+# Build artifacts and cache
+# ===========================================
+
+# Hardhat artifacts
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+# Compilation outputs
+contracts/*.json
+build/
+dist/
+out/
+
+# ===========================================
+# Dependencies
+# ===========================================
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.yarn-integrity
+
+# Package manager locks (keep one, remove others)
+# package-lock.json
+# yarn.lock
+
+# Optional npm cache directory
+.npm
+
+# ===========================================
+# IDE and OS files
+# ===========================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.tmp
+*.temp
+desktop.ini
+
+# Linux
+*~
+
+# ===========================================
+# Logs and temporary files
+# ===========================================
+
+# Logs
+logs
+*.log
+log.txt
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+nyc_output/
+
+# ESLint cache
+.eslintcache
+
+# Temporary folders
+tmp/
+temp/
+
+# ===========================================
+# Development and testing
+# ===========================================
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Hardhat network fork cache
+hardhat-network-fork-cache/
+
+# Local deployment addresses
+deployments/localhost/
+contracts/deployments.json
+
+# Gas reports
+gas-report.txt
+
+# ===========================================
+# Vercel deployment
+# ===========================================
+
+.vercel
+
+# ===========================================
+# Optional: Keep these files for tutorial
+# ===========================================
+
+# Keep example environment file
+!.env.example
+
+# Keep contract artifacts for tutorial reference
+!artifacts/contracts/**/*.json
+
+# Keep documentation
+!*.md
+!docs/
+
+# ===========================================
+# Project specific ignores
+# ===========================================
+
+# FHE specific temporary files
+fhe-temp/
+*.fhe
+
+# Development server files
+.cache/
+public/hot-reload.js
+
+# Backup files
+*.backup
+*.bak
