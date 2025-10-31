@@ -1,0 +1,47 @@
+# Development
+node_modules/
+.env*
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Build artifacts  
+dist/
+build/
+out/
+cache/
+artifacts/
+typechain/
+
+# Project specific
+contracts/
+scripts/
+*.sol
+hardhat.config.*
+*.md
+
+# Git
+.git/
+.gitignore
+
+# Vercel
+.vercel/
+
+# Package managers
+yarn.lock
+pnpm-lock.yaml
+package-lock.json
+
+# Media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.wav
+*.mp3
+
+# OS
+Thumbs.db
+.Trashes
