@@ -1,0 +1,27 @@
+{
+  "name": "@fhevm/nodejs-example",
+  "version": "1.0.0",
+  "description": "Node.js CLI example with FHEVM SDK",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "fhevm-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@fhevm/sdk": "workspace:*",
+    "ethers": "^6.9.0",
+    "fhevmjs": "^0.5.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0"
+  }
+}

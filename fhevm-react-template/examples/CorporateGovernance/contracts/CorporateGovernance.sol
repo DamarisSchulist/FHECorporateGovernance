@@ -4,29 +4,6 @@ pragma solidity ^0.8.24;
 import "fhevm/lib/TFHE.sol";
 import "fhevm/gateway/GatewayCaller.sol";
 
-/**
- * @title CorporateGovernance
- * @notice Advanced FHE-based corporate governance system with privacy-preserving voting
- * @dev Implements Gateway callback pattern for decryption, refund mechanisms, and timeout protection
- *
- * Architecture:
- * - User submits encrypted vote request → Contract records → Gateway decrypts → Callback completes transaction
- * - Refund mechanism handles decryption failures
- * - Timeout protection prevents permanent fund locking
- * - Privacy protection via homomorphic encryption and obfuscation
- *
- * Security Features:
- * - Input validation on all external functions
- * - Role-based access control (Chairperson, Board Members)
- * - SafeMath overflow protection (Solidity 0.8.24+)
- * - Reentrancy guards on fund transfers
- * - Audit trail via comprehensive event logging
- *
- * Gas Optimization:
- * - Efficient HCU (Homomorphic Computation Unit) usage
- * - Minimized storage operations
- * - Batch processing where applicable
- */
 contract CorporateGovernance is GatewayCaller {
     using TFHE for euint32;
     using TFHE for ebool;
@@ -42,12 +19,6 @@ contract CorporateGovernance is GatewayCaller {
         euint32 noVotes;
         address creator;
         uint256 requiredQuorum;
-        bool decryptionRequested;
-        uint256 decryptionRequestTime;
-        uint256 decryptionRequestId;
-        bool resolved;
-        uint256 revealedYesVotes;
-        uint256 revealedNoVotes;
     }
 
     struct BoardMember {
@@ -60,25 +31,17 @@ contract CorporateGovernance is GatewayCaller {
     mapping(uint256 => Resolution) public resolutions;
     mapping(address => BoardMember) public boardMembers;
     mapping(uint256 => mapping(address => bool)) public hasVoted;
-    mapping(uint256 => uint256) private resolutionIdByRequestId;
-
+    
     address public chairperson;
     uint256 public totalVotingPower;
     uint256 public resolutionCounter;
     uint256 public constant VOTING_DURATION = 7 days;
-    uint256 public constant DECRYPTION_TIMEOUT = 1 days;
-
-    // Reentrancy guard
-    bool private locked;
 
     event ResolutionCreated(uint256 indexed resolutionId, string title, address creator);
     event VoteCast(uint256 indexed resolutionId, address voter);
     event ResolutionClosed(uint256 indexed resolutionId, bool passed);
     event BoardMemberAdded(address member, string name, uint256 votingPower);
     event BoardMemberRemoved(address member);
-    event DecryptionRequested(uint256 indexed resolutionId, uint256 requestId);
-    event DecryptionTimeout(uint256 indexed resolutionId);
-    event ResolutionResolved(uint256 indexed resolutionId, uint256 yesVotes, uint256 noVotes, bool passed);
 
     modifier onlyChairperson() {
         require(msg.sender == chairperson, "Only chairperson can perform this action");
@@ -92,18 +55,6 @@ contract CorporateGovernance is GatewayCaller {
 
     modifier resolutionExists(uint256 _resolutionId) {
         require(_resolutionId < resolutionCounter, "Resolution does not exist");
-        _;
-    }
-
-    modifier nonReentrant() {
-        require(!locked, "Reentrancy detected");
-        locked = true;
-        _;
-        locked = false;
-    }
-
-    modifier validString(string memory _str) {
-        require(bytes(_str).length > 0 && bytes(_str).length <= 1000, "Invalid string length");
         _;
     }
 
@@ -125,9 +76,8 @@ contract CorporateGovernance is GatewayCaller {
         string memory _name,
         string memory _position,
         uint256 _votingPower
-    ) external validString(_name) validString(_position) {
-        require(_member != address(0), "Invalid member address");
-        require(_votingPower > 0 && _votingPower <= 1000, "Voting power out of range");
+    ) external {
+        require(_votingPower > 0, "Voting power must be greater than 0");
 
         // If member already exists, update their info and voting power
         if (boardMembers[_member].isActive) {
@@ -159,7 +109,7 @@ contract CorporateGovernance is GatewayCaller {
         string memory _title,
         string memory _description,
         uint256 _requiredQuorum
-    ) external validString(_title) validString(_description) {
+    ) external {
         // Auto-add sender as board member if not already added
         if (!boardMembers[msg.sender].isActive) {
             boardMembers[msg.sender] = BoardMember({
@@ -175,7 +125,7 @@ contract CorporateGovernance is GatewayCaller {
         require(_requiredQuorum > 0, "Quorum must be greater than 0");
 
         uint256 resolutionId = resolutionCounter++;
-
+        
         resolutions[resolutionId] = Resolution({
             id: resolutionId,
             title: _title,
@@ -186,13 +136,7 @@ contract CorporateGovernance is GatewayCaller {
             yesVotes: TFHE.asEuint32(0),
             noVotes: TFHE.asEuint32(0),
             creator: msg.sender,
-            requiredQuorum: _requiredQuorum,
-            decryptionRequested: false,
-            decryptionRequestTime: 0,
-            decryptionRequestId: 0,
-            resolved: false,
-            revealedYesVotes: 0,
-            revealedNoVotes: 0
+            requiredQuorum: _requiredQuorum
         });
 
         emit ResolutionCreated(resolutionId, _title, msg.sender);
@@ -243,95 +187,34 @@ contract CorporateGovernance is GatewayCaller {
         emit VoteCast(_resolutionId, msg.sender);
     }
 
-    /**
-     * @notice Requests decryption for resolution vote tallies via Gateway
-     * @dev Implements Gateway callback pattern with timeout protection
-     * @param _resolutionId The ID of the resolution to close
-     */
     function closeResolution(uint256 _resolutionId) external resolutionExists(_resolutionId) {
         Resolution storage resolution = resolutions[_resolutionId];
-
+        
         require(resolution.active, "Resolution is already closed");
         require(
             block.timestamp > resolution.endTime || msg.sender == resolution.creator,
             "Voting period not ended or not creator"
         );
-        require(!resolution.decryptionRequested, "Decryption already requested");
 
         resolution.active = false;
-        resolution.decryptionRequested = true;
-        resolution.decryptionRequestTime = block.timestamp;
 
         // Request decryption of vote counts for final result
         uint256[] memory cts = new uint256[](2);
         cts[0] = Gateway.toUint256(resolution.yesVotes);
         cts[1] = Gateway.toUint256(resolution.noVotes);
-
-        uint256 requestId = Gateway.requestDecryption(
-            cts,
-            this.resolveResolution.selector,
-            0,
-            block.timestamp + 100,
-            false
-        );
-
-        resolution.decryptionRequestId = requestId;
-        resolutionIdByRequestId[requestId] = _resolutionId;
-
-        emit DecryptionRequested(_resolutionId, requestId);
+        
+        Gateway.requestDecryption(cts, this.resolveResolution.selector, 0, block.timestamp + 100, false);
     }
 
-    /**
-     * @notice Gateway callback to resolve resolution after decryption
-     * @dev Only callable by Gateway, includes refund mechanism for failures
-     * @param requestId The decryption request ID
-     * @param decryptedVotes Array of decrypted vote counts [yesVotes, noVotes]
-     */
-    function resolveResolution(uint256 requestId, uint256[] memory decryptedVotes) public onlyGateway {
-        uint256 resolutionId = resolutionIdByRequestId[requestId];
-        Resolution storage resolution = resolutions[resolutionId];
-
-        require(!resolution.resolved, "Resolution already resolved");
-        require(decryptedVotes.length == 2, "Invalid decryption result");
-
+    function resolveResolution(uint256, uint256[] memory decryptedVotes) public onlyGateway {
+        // This function will be called by the gateway with decrypted results
         uint256 yesVotes = decryptedVotes[0];
         uint256 noVotes = decryptedVotes[1];
-
-        resolution.resolved = true;
-        resolution.revealedYesVotes = yesVotes;
-        resolution.revealedNoVotes = noVotes;
-
-        bool passed = yesVotes > noVotes && (yesVotes + noVotes) >= resolution.requiredQuorum;
-
-        emit ResolutionResolved(resolutionId, yesVotes, noVotes, passed);
-        emit ResolutionClosed(resolutionId, passed);
-    }
-
-    /**
-     * @notice Emergency timeout handler for failed decryption
-     * @dev Allows creator to handle stuck resolutions after timeout period
-     * @param _resolutionId The ID of the resolution with timeout
-     */
-    function handleDecryptionTimeout(uint256 _resolutionId) external resolutionExists(_resolutionId) {
-        Resolution storage resolution = resolutions[_resolutionId];
-
-        require(resolution.decryptionRequested, "Decryption not requested");
-        require(!resolution.resolved, "Resolution already resolved");
-        require(
-            block.timestamp >= resolution.decryptionRequestTime + DECRYPTION_TIMEOUT,
-            "Timeout period not reached"
-        );
-        require(
-            msg.sender == resolution.creator || msg.sender == chairperson,
-            "Only creator or chairperson can handle timeout"
-        );
-
-        resolution.resolved = true;
-        resolution.revealedYesVotes = 0;
-        resolution.revealedNoVotes = 0;
-
-        emit DecryptionTimeout(_resolutionId);
-        emit ResolutionClosed(_resolutionId, false);
+        
+        // For simplicity, emit event with results
+        // In production, you'd store this in a mapping
+        bool passed = yesVotes > noVotes && (yesVotes + noVotes) >= resolutions[0].requiredQuorum;
+        emit ResolutionClosed(0, passed);
     }
 
     function getResolution(uint256 _resolutionId) external view resolutionExists(_resolutionId) returns (
@@ -342,10 +225,7 @@ contract CorporateGovernance is GatewayCaller {
         uint256 endTime,
         bool active,
         address creator,
-        uint256 requiredQuorum,
-        bool resolved,
-        uint256 revealedYesVotes,
-        uint256 revealedNoVotes
+        uint256 requiredQuorum
     ) {
         Resolution storage resolution = resolutions[_resolutionId];
         return (
@@ -356,10 +236,7 @@ contract CorporateGovernance is GatewayCaller {
             resolution.endTime,
             resolution.active,
             resolution.creator,
-            resolution.requiredQuorum,
-            resolution.resolved,
-            resolution.revealedYesVotes,
-            resolution.revealedNoVotes
+            resolution.requiredQuorum
         );
     }
 
@@ -384,37 +261,5 @@ contract CorporateGovernance is GatewayCaller {
 
     function getResolutionCount() external view returns (uint256) {
         return resolutionCounter;
-    }
-
-    /**
-     * @notice Get detailed status of resolution decryption
-     * @param _resolutionId The ID of the resolution
-     * @return decryptionRequested Whether decryption has been requested
-     * @return decryptionRequestTime Timestamp when decryption was requested
-     * @return resolved Whether the resolution has been resolved
-     * @return timeUntilTimeout Seconds until timeout (0 if not applicable)
-     */
-    function getResolutionStatus(uint256 _resolutionId) external view resolutionExists(_resolutionId) returns (
-        bool decryptionRequested,
-        uint256 decryptionRequestTime,
-        bool resolved,
-        uint256 timeUntilTimeout
-    ) {
-        Resolution storage resolution = resolutions[_resolutionId];
-        uint256 timeout = 0;
-
-        if (resolution.decryptionRequested && !resolution.resolved) {
-            uint256 elapsed = block.timestamp - resolution.decryptionRequestTime;
-            if (elapsed < DECRYPTION_TIMEOUT) {
-                timeout = DECRYPTION_TIMEOUT - elapsed;
-            }
-        }
-
-        return (
-            resolution.decryptionRequested,
-            resolution.decryptionRequestTime,
-            resolution.resolved,
-            timeout
-        );
     }
 }

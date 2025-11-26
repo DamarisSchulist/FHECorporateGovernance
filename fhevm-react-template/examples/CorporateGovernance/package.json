@@ -1,0 +1,11 @@
+{
+  "name": "corporate-governance-system",
+  "version": "1.0.0",
+  "description": "Corporate Governance Board Resolution System",
+  "scripts": {
+    "build": "echo 'Static site ready'",
+    "start": "echo 'Served by Vercel'"
+  },
+  "keywords": ["governance", "voting", "corporate", "blockchain"],
+  "license": "MIT"
+}

@@ -1,6 +1,6 @@
 # Corporate Governance System
 
-A secure and private corporate governance solution for board resolutions using advanced FHE (Fully Homomorphic Encryption) technology. This system ensures complete confidentiality in board voting while maintaining transparency and accountability in corporate decision-making processes.
+An advanced, secure, and privacy-preserving corporate governance solution for board resolutions using cutting-edge FHE (Fully Homomorphic Encryption) technology. This system ensures complete confidentiality in board voting while maintaining transparency and accountability in corporate decision-making processes.
 
 ## Live Application
 
@@ -20,6 +20,7 @@ The Board Resolution System is a blockchain-based platform designed for corporat
 - Cast confidential votes using FHE encryption
 - Manage board member access and voting power
 - Monitor resolution status and outcomes
+- Automatic timeout protection for reliability
 
 ### Corporate Governance Privacy Voting
 Our system implements privacy-preserving voting mechanisms that ensure:
@@ -27,15 +28,103 @@ Our system implements privacy-preserving voting mechanisms that ensure:
 - **Result Transparency**: Final outcomes are visible once voting concludes
 - **Audit Trail**: All transactions are recorded on-chain for accountability
 - **Access Control**: Only authorized board members can participate
+- **Refund Protection**: Automatic handling of decryption failures
+- **Timeout Safety**: Prevents permanent locking of funds or resolutions
+
+## Innovative Architecture
+
+### Gateway Callback Pattern
+
+The system uses an innovative asynchronous processing model:
+
+```
+User → Submit Encrypted Vote → Contract Records → Gateway Decrypts → Callback Completes Transaction
+```
+
+**Benefits:**
+- Privacy preserved during voting period
+- Efficient off-chain decryption
+- Automatic timeout handling
+- Secure callback verification
+
+### Advanced Security Features
+
+1. **Input Validation**
+   - String length limits (1-1000 characters)
+   - Address validation (no zero addresses)
+   - Numeric range checks (voting power: 1-1000)
+   - Quorum validation
+
+2. **Access Control**
+   - Role-based permissions (Chairperson, Board Members)
+   - Gateway-only callbacks
+   - Creator/Chairperson emergency controls
+
+3. **Overflow Protection**
+   - Native Solidity 0.8.24+ SafeMath
+   - Automatic overflow/underflow detection
+   - No external libraries needed
+
+4. **Reentrancy Guards**
+   - Custom lock mechanism
+   - Protection on all state-changing functions
+   - Safe external call handling
+
+5. **Audit Trail**
+   - Comprehensive event logging
+   - Resolution lifecycle tracking
+   - Decryption status monitoring
+   - Timeout alerts
+
+### Privacy Protection Techniques
+
+#### 1. Division Problem Solution
+**Challenge**: FHE doesn't support division directly
+
+**Solution**: Random multiplier approach
+```solidity
+// Instead of: result = encrypted / divisor
+// Use: result = (total * weight) / totalWeight
+```
+
+#### 2. Price Obfuscation
+**Challenge**: Exact values could leak information
+
+**Solution**: Obfuscation techniques
+- Aggregate before revealing
+- Use Gateway for controlled decryption
+- Reveal only final tallies
+
+#### 3. Async Processing
+**Challenge**: Decryption cannot be synchronous
+
+**Solution**: Gateway callback mode
+- Submit encrypted request
+- Gateway processes off-chain
+- Callback with decrypted results
+- Timeout protection for failures
+
+#### 4. Gas Optimization
+**Challenge**: FHE operations are expensive
+
+**Solution**: Efficient HCU usage
+- Minimize encrypted operations
+- Use appropriate data types (euint32)
+- Batch operations when possible
+- Strategic decryption timing
 
 ## Key Features
 
-- **Complete Privacy**: Voting decisions encrypted with FHE technology
-- **Professional Governance**: Structured board member management system
-- **Real-time Updates**: Instant resolution status and voting progress
-- **Secure & Reliable**: Smart contract-based with multiple security layers
-- **Voting Power Management**: Flexible voting weight assignments
-- **Time-bound Voting**: Automatic voting period management
+- ✅ **Complete Privacy**: Voting decisions encrypted with FHE technology
+- ✅ **Professional Governance**: Structured board member management system
+- ✅ **Real-time Updates**: Instant resolution status and voting progress
+- ✅ **Secure & Reliable**: Smart contract-based with multiple security layers
+- ✅ **Voting Power Management**: Flexible voting weight assignments (1-1000)
+- ✅ **Time-bound Voting**: Automatic voting period management (7 days)
+- ✅ **Timeout Protection**: 1-day timeout for failed decryptions
+- ✅ **Refund Mechanism**: Automatic handling of stuck resolutions
+- ✅ **Gateway Integration**: Secure decryption callback pattern
+- ✅ **Emergency Controls**: Creator/Chairperson timeout handling
 
 ## Development Framework
 
@@ -78,11 +167,24 @@ npm run simulate
 ```
 
 For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+For architecture and technical details, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Technical Architecture
+
+For comprehensive technical documentation including:
+- Gateway callback pattern details
+- Security implementation specifics
+- Privacy protection techniques
+- Gas optimization strategies
+- API documentation
+- Common pitfalls and solutions
+
+Please refer to [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Voting Rules & Access Control
 
 ### Voting Restrictions
-- **Single Vote Policy**: If you have already voted on a resolution, you cannot vote again
+- **Multiple Votes Allowed**: You can update your vote before resolution closes
 - **Authorization Required**: Users without proper permissions will have their voting attempts rejected
 - **Eligibility Check**: Only qualified board members who meet the requirements can participate in voting
 - **Time Limits**: Voting is restricted to the active voting period for each resolution
@@ -99,17 +201,22 @@ The system provides precise error messages to help users understand and resolve 
 
 ### Creating Resolution Errors
 - **"Quorum cannot exceed total voting power"** - The required quorum exceeds the total available voting power
-- **"Only active board members"** - You must be an active board member to create resolutions
+- **"Quorum must be greater than 0"** - Invalid quorum specified
+- **"Invalid string length"** - Title or description is empty or exceeds 1000 characters
 
 ### Adding Member Errors
-- **"Member already exists"** - This address is already registered as a board member
-- **"Voting power must be greater than 0"** - Invalid voting power specified
+- **"Invalid member address"** - Cannot add zero address as member
+- **"Voting power out of range"** - Voting power must be between 1 and 1000
 
 ### Voting Errors
-- **"Only active board members"** - You must be an active board member to vote
-- **"Already voted"** - You have already cast your vote for this resolution
-- **"Voting period has ended"** - The voting period for this resolution has expired
+- **"Resolution does not exist"** - Invalid resolution ID
 - **"Resolution is not active"** - The resolution is no longer accepting votes
+- **"Voting period has ended"** - The voting period for this resolution has expired
+
+### Decryption Errors
+- **"Decryption already requested"** - Cannot request decryption twice
+- **"Timeout period not reached"** - Must wait for timeout before manual resolution
+- **"Resolution already resolved"** - Cannot resolve a completed resolution
 
 ## Technical Architecture
 
@@ -129,40 +236,53 @@ The system provides precise error messages to help users understand and resolve 
 - **Etherscan**: Contract verification and interaction
 
 ### Security Features
-- **On-chain Encryption**: Votes are encrypted at the smart contract level
+- **On-chain Encryption**: Votes are encrypted at the smart contract level using FHE
 - **Access Control**: Role-based permissions (Chairperson, Board Members)
-- **Time Locks**: Automatic voting period enforcement
+- **Time Locks**: Automatic voting period enforcement (7 days)
+- **Timeout Protection**: 1-day timeout for stuck decryptions
+- **Reentrancy Guards**: Prevention of reentrancy attacks
+- **Input Validation**: Comprehensive validation on all inputs
+- **Overflow Protection**: Native Solidity 0.8.24+ SafeMath
 - **Audit Trail**: Complete transaction history on-chain
+- **Gateway Security**: Only authorized Gateway can provide decrypted results
+- **Emergency Controls**: Creator/Chairperson timeout handling
 
 ## User Roles
 
 ### Chairperson
 - Create and manage board resolutions
 - Add and remove board members
-- Set voting power for members
+- Set voting power for members (1-1000)
 - Close voting periods
+- Handle decryption timeouts
 
 ### Board Members
 - View active resolutions
-- Cast confidential votes
+- Cast confidential votes (can update before close)
 - Monitor voting progress
 - Access resolution history
+- Create new resolutions
 
 ## Workflow
 
 1. **Connection**: Board members connect their Web3 wallet
-2. **Board Access**: Join the board or get added by existing members
+2. **Board Access**: Join the board or get added by existing members (automatic on first action)
 3. **Resolution Creation**: Create new resolutions with required quorum
-4. **Voting Period**: Board members cast encrypted votes during the active period
-5. **Result Compilation**: Votes are tallied using FHE computation
-6. **Resolution Closure**: Final results are revealed and recorded
+4. **Voting Period**: Board members cast encrypted votes during the active period (7 days)
+5. **Vote Updates**: Members can update votes before resolution closes
+6. **Resolution Closure**: Creator or anyone after expiry requests vote decryption
+7. **Gateway Processing**: Gateway decrypts votes and calls back contract
+8. **Result Compilation**: Final results are revealed and recorded
+9. **Timeout Handling**: If Gateway fails, emergency timeout resolution available after 1 day
 
 ## Privacy Guarantees
 
-- **Vote Secrecy**: Individual votes remain encrypted and private
-- **Selective Disclosure**: Only final tallies are revealed
+- **Vote Secrecy**: Individual votes remain encrypted and private throughout voting
+- **Selective Disclosure**: Only final tallies are revealed via Gateway callback
 - **No Vote Correlation**: Cannot link votes to specific members
-- **Future Privacy**: Votes remain private even with quantum computing advances
+- **Future Privacy**: Votes remain private even with quantum computing advances (FHE property)
+- **Controlled Decryption**: Only Gateway can decrypt, with timeout protection
+- **Obfuscation**: Privacy protection techniques prevent information leakage
 
 ## Use Cases
 

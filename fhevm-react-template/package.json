@@ -1,0 +1,53 @@
+{
+  "name": "fhevm-sdk-monorepo",
+  "version": "1.0.0",
+  "description": "Universal FHEVM SDK for building confidential dApps - Framework Agnostic",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "build": "npm run build:sdk && npm run build:examples",
+    "build:sdk": "cd packages/fhevm-sdk && npm run build",
+    "build:examples": "cd examples/contract-deployment && npm run build",
+    "dev:nextjs": "cd packages/nextjs-example && npm run dev",
+    "dev:vue": "cd packages/vue-example && npm run dev",
+    "dev:nodejs": "cd packages/nodejs-example && npm run dev",
+    "start:nextjs": "cd packages/nextjs-example && npm run dev",
+    "start:vue": "cd packages/vue-example && npm run dev",
+    "start:cli": "cd packages/nodejs-example && npm start",
+    "deploy:contracts": "cd examples/contract-deployment && npm run deploy",
+    "test": "npm run test:sdk",
+    "test:sdk": "cd packages/fhevm-sdk && npm test",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist examples/*/node_modules"
+  },
+  "keywords": [
+    "fhevm",
+    "fhe",
+    "fully-homomorphic-encryption",
+    "blockchain",
+    "privacy",
+    "encryption",
+    "web3",
+    "sdk",
+    "react",
+    "vue",
+    "nextjs",
+    "framework-agnostic"
+  ],
+  "author": "FHEVM Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zama-ai/fhevm-react-template.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

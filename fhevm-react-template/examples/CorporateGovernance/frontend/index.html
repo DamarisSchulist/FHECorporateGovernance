@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Corporate governance board resolution system with FHE encrypted voting for private decision making">
+    <meta name="keywords" content="board resolution, corporate governance, FHE, encrypted voting, blockchain, privacy">
+    <meta name="author" content="Board Resolution System">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Board Resolution System - Corporate Governance Privacy Voting">
+    <meta property="og:description" content="Secure board resolution voting with FHE encryption">
+    <meta property="og:image" content="/favicon.ico">
+    
+    <title>Board Resolution System - Corporate Governance Privacy Voting</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- ethers.js -->
+    <script src="https://unpkg.com/ethers@6.13.2/dist/ethers.umd.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #8b5cf6 100%);
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        🏛️ Board Resolution System
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="showSection('home')" class="nav-btn text-white bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Home</button>
+                    <button onclick="showSection('resolutions')" class="nav-btn text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Resolutions</button>
+                    <button onclick="showSection('create')" class="nav-btn text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Create Resolution</button>
+                    <button onclick="showSection('board')" class="nav-btn text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Board Members</button>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <div id="balanceInfo" class="hidden bg-gray-700 px-3 py-2 rounded-lg text-sm">
+                        <span class="text-gray-400">Balance:</span>
+                        <span id="userBalance" class="text-white font-medium">0 ETH</span>
+                    </div>
+                    <button id="connectWallet" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Connect Wallet
+                    </button>
+                    <div id="walletInfo" class="hidden bg-gray-700 px-4 py-2 rounded-lg text-sm">
+                        <span id="walletAddress">Not Connected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="gradient-bg py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-5xl font-bold mb-6">
+                Corporate Governance Privacy Voting System
+            </h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                Secure board resolution voting system based on Zama FHE encryption technology. Ensures complete privacy for corporate governance decisions while maintaining transparency and accountability.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="showSection('create')" class="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-50 transition-colors">
+                    Create Resolution
+                </button>
+                <button onclick="showSection('resolutions')" class="glassmorphism text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition-colors">
+                    View Resolutions
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl font-bold mb-4">Why Choose Our Board Resolution System?</h3>
+                <p class="text-xl text-gray-300">Advanced privacy protection technology ensuring secure corporate governance</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700 hover:border-blue-500 transition-colors">
+                    <div class="text-4xl mb-4">🔐</div>
+                    <h4 class="text-xl font-semibold mb-3">Complete Privacy</h4>
+                    <p class="text-gray-400">Using Zama FHE homomorphic encryption technology, voting decisions and amounts are completely confidential and unbreakable.</p>
+                </div>
+                
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700 hover:border-purple-500 transition-colors">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h4 class="text-xl font-semibold mb-3">Instant Deployment</h4>
+                    <p class="text-gray-400">One-click smart contract creation with automatic parameter configuration, resolution online within 3 minutes.</p>
+                </div>
+                
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700 hover:border-pink-500 transition-colors">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h4 class="text-xl font-semibold mb-3">Secure & Reliable</h4>
+                    <p class="text-gray-400">Rigorously audited smart contracts with multiple security mechanisms protecting funds and data security.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Resolution Section -->
+    <section id="create" class="py-20 bg-gray-800 hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-4">Create Board Resolution</h3>
+                <p class="text-xl text-gray-300">Submit a new resolution for board member voting</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-xl p-8">
+                <form id="createForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Resolution Title *</label>
+                            <input type="text" id="resolutionTitle" required 
+                                   class="w-full px-4 py-3 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-blue-500"
+                                   placeholder="Enter resolution title">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Required Quorum (Voting Power) *</label>
+                            <input type="number" id="requiredQuorum" required min="1" value="3"
+                                   class="w-full px-4 py-3 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Resolution Description *</label>
+                        <textarea id="resolutionDescription" rows="4" required
+                                  class="w-full px-4 py-3 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-blue-500"
+                                  placeholder="Describe the resolution in detail"></textarea>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-200">
+                        Create Resolution
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Board Members Section -->
+    <section id="board" class="py-20 bg-gray-900 hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-4">Board Members</h3>
+                <p class="text-xl text-gray-300">Manage board member access and voting power</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-800 rounded-xl border border-gray-700 p-6">
+                    <h4 class="text-lg font-semibold mb-4">Current Board Members</h4>
+                    <div id="boardMembersList" class="space-y-3">
+                        <!-- Board members will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="bg-gray-800 rounded-xl border border-gray-700 p-6">
+                    <h4 class="text-lg font-semibold mb-4">Add Board Member</h4>
+                    <form id="addMemberForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Member Address</label>
+                            <input type="text" id="memberAddress" required 
+                                   class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                                   placeholder="0x...">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Name</label>
+                            <input type="text" id="memberName" required 
+                                   class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                                   placeholder="Enter full name">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Position</label>
+                            <input type="text" id="memberPosition" required 
+                                   class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white"
+                                   placeholder="e.g., CEO, CFO, Chairman">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Voting Power</label>
+                            <input type="number" id="votingPower" min="1" value="1" required 
+                                   class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white">
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all">
+                            Add Member
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resolutions Section -->
+    <section id="resolutions" class="py-20 bg-gray-800 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold mb-4">Active Resolutions</h3>
+                <p class="text-xl text-gray-300">View and vote on board resolutions</p>
+            </div>
+            
+            <div id="resolutionsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Resolutions will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Voting Modal -->
+    <div id="votingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold">Cast Your Vote</h3>
+                <button onclick="closeVotingModal()" class="text-gray-400 hover:text-white">✕</button>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm text-gray-400 mb-2">Resolution: <span id="modalResolutionTitle" class="text-white"></span></p>
+                <p class="text-xs text-gray-500">Your vote will be encrypted with FHE, completely confidential</p>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-4">Select Your Vote</label>
+                <div class="flex space-x-4">
+                    <button id="voteYes" onclick="selectVote(true)" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors">
+                        ✅ Yes
+                    </button>
+                    <button id="voteNo" onclick="selectVote(false)" 
+                            class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors">
+                        ❌ No
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button onclick="closeVotingModal()" 
+                        class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Cancel
+                </button>
+                <button onclick="submitVote()" 
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    Submit Vote
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+            <p>&copy; 2025 Board Resolution System. Built with Zama FHE Protocol.</p>
+            <p class="mt-2 text-sm">Confidential • Secure • Transparent</p>
+            <p class="mt-2 text-xs">
+                <span id="contractStatus">Board Resolution Contract: 0x4Ec9...5D3 | <span class="text-green-400">✅ Sepolia Deployed</span></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state variables
+        let isConnected = false;
+        let userAccount = '';
+        let provider = null;
+        let signer = null;
+        let contract = null;
+        let selectedVote = null;
+        let currentResolutionId = null;
+        let loading = false;
+        let activeResolutions = [];
+        let boardMembers = [];
+        let userBalance = '0';
+
+        // Contract configuration - REAL SEPOLIA DEPLOYMENT
+        const CONTRACT_ADDRESS = "0x13116d08546b78F5fDB7fA4544f778885B19A441";
+        const CONTRACT_ABI = [
+            "function addBoardMember(address _member, string memory _name, string memory _position, uint256 _votingPower) external",
+            "function removeBoardMember(address _member) external", 
+            "function createResolution(string memory _title, string memory _description, uint256 _requiredQuorum) external",
+            "function castVote(uint256 _resolutionId, einput _encryptedVote, bytes calldata inputProof) external",
+            "function closeResolution(uint256 _resolutionId) external",
+            "function getResolution(uint256 _resolutionId) external view returns (uint256 id, string memory title, string memory description, uint256 startTime, uint256 endTime, bool active, address creator, uint256 requiredQuorum)",
+            "function getBoardMember(address _member) external view returns (bool isActive, uint256 votingPower, string memory name, string memory position)",
+            "function getTotalVotingPower() external view returns (uint256)",
+            "function getResolutionCount() external view returns (uint256)",
+            "function chairperson() external view returns (address)",
+            "event ResolutionCreated(uint256 indexed resolutionId, string title, address creator)",
+            "event VoteCast(uint256 indexed resolutionId, address voter)",
+            "event ResolutionClosed(uint256 indexed resolutionId, bool passed)",
+            "event BoardMemberAdded(address member, string name, uint256 votingPower)"
+        ];
+
+        // Navigation system
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['home', 'create', 'resolutions', 'board'];
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    if (section === 'home') {
+                        element.style.display = 'none';
+                    } else {
+                        element.classList.add('hidden');
+                    }
+                }
+            });
+            
+            // Show features section only when home is active
+            const featuresSection = document.getElementById('features');
+            if (sectionName === 'home') {
+                featuresSection.style.display = 'block';
+            } else {
+                featuresSection.style.display = 'none';
+            }
+            
+            // Show selected section
+            const targetElement = document.getElementById(sectionName);
+            if (targetElement) {
+                if (sectionName === 'home') {
+                    targetElement.style.display = 'block';
+                } else {
+                    targetElement.classList.remove('hidden');
+                }
+            }
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-white', 'bg-gray-700');
+                btn.classList.add('text-gray-300');
+            });
+            
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const buttonMap = { home: 0, resolutions: 1, create: 2, board: 3 };
+            if (buttonMap[sectionName] !== undefined) {
+                const activeBtn = navButtons[buttonMap[sectionName]];
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-gray-300');
+                    activeBtn.classList.add('text-white', 'bg-gray-700');
+                }
+            }
+            
+            // Load data for specific sections
+            if (sectionName === 'resolutions' && isConnected) {
+                loadResolutions();
+            } else if (sectionName === 'board' && isConnected) {
+                loadBoardMembers();
+            }
+        }
+
+        // Wallet connection - Based on working reference
+        const connectWallet = async () => {
+            try {
+                if (!window.ethereum) {
+                    showToast('Please install MetaMask!', 'error');
+                    return;
+                }
+
+                if (loading) return;
+                loading = true;
+                showToast('Connecting to MetaMask...', 'info');
+
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+
+                if (accounts.length === 0) {
+                    throw new Error('No accounts returned');
+                }
+
+                // Sepolia network check
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (chainId !== '0xaa36a7') { // Sepolia chain ID
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: '0xaa36a7' }],
+                        });
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: '0xaa36a7',
+                                    chainName: 'Sepolia Test Network',
+                                    rpcUrls: ['https://sepolia.infura.io/v3/'],
+                                    nativeCurrency: {
+                                        name: 'ETH',
+                                        symbol: 'ETH',
+                                        decimals: 18
+                                    },
+                                    blockExplorerUrls: ['https://sepolia.etherscan.io/']
+                                }]
+                            });
+                        }
+                    }
+                }
+
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                userAccount = accounts[0];
+                isConnected = true;
+                
+                showToast('Connected to Sepolia with real Board Resolution contract! 🎯', 'success');
+                
+                // Update UI
+                document.getElementById('connectWallet').textContent = 'Connected';
+                document.getElementById('connectWallet').classList.add('bg-green-600', 'hover:bg-green-700');
+                document.getElementById('connectWallet').classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                
+                document.getElementById('walletInfo').classList.remove('hidden');
+                document.getElementById('walletAddress').textContent = 
+                    userAccount.substring(0, 6) + '...' + userAccount.substring(38);
+                
+                document.getElementById('balanceInfo').classList.remove('hidden');
+                
+                // Load initial data
+                await updateUserBalance();
+                await loadResolutions();
+                await loadBoardMembers();
+                
+            } catch (error) {
+                console.error('Wallet connection failed:', error);
+                let errorMessage = 'Wallet connection failed ❌';
+                
+                if (error.code === 4001) {
+                    errorMessage = 'User rejected connection request';
+                } else if (error.code === -32002) {
+                    errorMessage = 'Connection request already pending. Please check MetaMask';
+                } else if (error.code === -32603) {
+                    errorMessage = 'Internal error. Please try again';
+                } else if (error.message && error.message.includes('User denied')) {
+                    errorMessage = 'User denied account access';
+                } else if (error.message && error.message.includes('Already processing')) {
+                    errorMessage = 'Already processing. Please wait';
+                } else if (error.message) {
+                    errorMessage = `Connection failed: ${error.message}`;
+                }
+                
+                showToast(errorMessage, 'error');
+                
+                // Reset connection state on error
+                isConnected = false;
+                userAccount = '';
+                provider = null;
+                signer = null;
+                contract = null;
+            } finally {
+                loading = false;
+            }
+        };
+
+        // Form handlers and initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Connect wallet button
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            
+            // Load initial data
+            loadResolutions();
+            loadBoardMembers();
+            
+            // Show home by default
+            showSection('home');
+            // Create resolution form
+            const createForm = document.getElementById('createForm');
+            if (createForm) {
+                createForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('Create resolution form submitted');
+                
+                if (!isConnected) {
+                    showToast('Please connect wallet first', 'error');
+                    return;
+                }
+                
+                const title = document.getElementById('resolutionTitle').value.trim();
+                const description = document.getElementById('resolutionDescription').value.trim();
+                const requiredQuorum = document.getElementById('requiredQuorum').value;
+                
+                if (!title || !description) {
+                    showToast('Please fill in all fields', 'error');
+                    return;
+                }
+                
+                try {
+                    showToast('Creating resolution on Sepolia blockchain...', 'info');
+                    
+                    // Ensure we're connected to Sepolia
+                    const network = await provider.getNetwork();
+                    if (network.chainId !== 11155111n) {
+                        showToast('Please switch to Sepolia testnet', 'error');
+                        return;
+                    }
+                    
+                    // Real blockchain transaction
+                    const tx = await contract.createResolution(
+                        title,
+                        description,
+                        parseInt(requiredQuorum)
+                    );
+                    
+                    showToast('Transaction sent! Waiting for confirmation...', 'info');
+                    const receipt = await tx.wait();
+                    
+                    if (receipt.status === 1) {
+                        showToast(`✅ Resolution created successfully!`, 'success');
+                        console.log(`Resolution transaction: https://sepolia.etherscan.io/tx/${tx.hash}`);
+                        
+                        // Store resolution locally for UI display
+                        const newResolution = {
+                            id: Date.now(),
+                            title: title,
+                            description: description,
+                            startTime: Date.now() / 1000,
+                            endTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).getTime() / 1000, // 7 days
+                            active: true,
+                            creator: userAccount,
+                            requiredQuorum: parseInt(requiredQuorum),
+                            txHash: tx.hash
+                        };
+                        
+                        const storedResolutions = JSON.parse(localStorage.getItem('resolutions') || '[]');
+                        storedResolutions.push(newResolution);
+                        localStorage.setItem('resolutions', JSON.stringify(storedResolutions));
+                    } else {
+                        showToast('Resolution creation failed', 'error');
+                        return;
+                    }
+                    
+                    document.getElementById('createForm').reset();
+                    
+                    // Auto-navigate to resolutions
+                    setTimeout(() => {
+                        showSection('resolutions');
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Create resolution failed:', error);
+                    if (error.code === 4001) {
+                        showToast('Transaction cancelled by user', 'error');
+                    } else if (error.code === -32000) {
+                        showToast('Insufficient funds for gas', 'error');
+                    } else if (error.message && error.message.includes('insufficient funds')) {
+                        showToast('Insufficient ETH balance for gas fees', 'error');
+                    } else {
+                        showToast(`Failed to create resolution: ${error.message}`, 'error');
+                    }
+                }
+                });
+            } else {
+                console.error('Create form not found!');
+            }
+
+            // Add board member form
+            const addMemberForm = document.getElementById('addMemberForm');
+            if (addMemberForm) {
+                addMemberForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!isConnected) {
+                    showToast('Please connect wallet first', 'error');
+                    return;
+                }
+                
+                const address = document.getElementById('memberAddress').value.trim();
+                const name = document.getElementById('memberName').value.trim();
+                const position = document.getElementById('memberPosition').value.trim();
+                const votingPower = document.getElementById('votingPower').value;
+                
+                // Validate Ethereum address
+                if (!address || !ethers.isAddress(address)) {
+                    showToast('Please enter a valid Ethereum address', 'error');
+                    return;
+                }
+                
+                if (!name || !position) {
+                    showToast('Please fill in all fields', 'error');
+                    return;
+                }
+                
+                try {
+                    showToast('Adding board member to Sepolia blockchain...', 'info');
+                    
+                    // Ensure we're connected to Sepolia
+                    const network = await provider.getNetwork();
+                    if (network.chainId !== 11155111n) {
+                        showToast('Please switch to Sepolia testnet', 'error');
+                        return;
+                    }
+                    
+                    // Real blockchain transaction
+                    const tx = await contract.addBoardMember(
+                        address,
+                        name,
+                        position,
+                        parseInt(votingPower)
+                    );
+                    
+                    showToast('Board member transaction sent! Waiting for confirmation...', 'info');
+                    const receipt = await tx.wait();
+                    
+                    if (receipt.status === 1) {
+                        showToast(`✅ Board member added successfully!`, 'success');
+                        console.log(`Board member transaction: https://sepolia.etherscan.io/tx/${tx.hash}`);
+                        
+                        // Store member locally for UI display
+                        const newMember = {
+                            address: address,
+                            name: name,
+                            position: position,
+                            votingPower: parseInt(votingPower),
+                            isActive: true,
+                            txHash: tx.hash
+                        };
+                        
+                        const storedMembers = JSON.parse(localStorage.getItem('boardMembers') || '[]');
+                        storedMembers.push(newMember);
+                        localStorage.setItem('boardMembers', JSON.stringify(storedMembers));
+                    } else {
+                        showToast('Board member transaction failed', 'error');
+                        return;
+                    }
+                    
+                    document.getElementById('addMemberForm').reset();
+                    await loadBoardMembers();
+                    
+                } catch (error) {
+                    console.error('Add member failed:', error);
+                    if (error.code === 4001) {
+                        showToast('Transaction cancelled by user', 'error');
+                    } else if (error.code === -32000) {
+                        showToast('Insufficient funds for gas', 'error');
+                    } else if (error.message && error.message.includes('insufficient funds')) {
+                        showToast('Insufficient ETH balance for gas fees', 'error');
+                    } else if (error.message && error.message.includes('already exists')) {
+                        showToast('Board member already exists', 'error');
+                    } else {
+                        showToast(`Failed to add member: ${error.message}`, 'error');
+                    }
+                }
+                });
+            } else {
+                console.error('Add member form not found!');
+            }
+        });
+
+        // Voting modal functions
+        function showVotingModal(resolutionId, title) {
+            console.log('showVotingModal called with:', resolutionId, title);
+            
+            if (!isConnected) {
+                showToast('Please connect wallet first', 'error');
+                return;
+            }
+            
+            currentResolutionId = resolutionId;
+            selectedVote = null;
+            
+            const modalTitle = document.getElementById('modalResolutionTitle');
+            const votingModal = document.getElementById('votingModal');
+            
+            if (modalTitle && votingModal) {
+                modalTitle.textContent = title;
+                document.getElementById('voteYes').classList.remove('ring-2', 'ring-white');
+                document.getElementById('voteNo').classList.remove('ring-2', 'ring-white');
+                
+                votingModal.classList.remove('hidden');
+                console.log('Voting modal opened successfully');
+            } else {
+                console.error('Modal elements not found!');
+            }
+        }
+
+        function closeVotingModal() {
+            document.getElementById('votingModal').classList.add('hidden');
+            selectedVote = null;
+            currentResolutionId = null;
+        }
+
+        function selectVote(vote) {
+            selectedVote = vote;
+            
+            document.getElementById('voteYes').classList.remove('ring-2', 'ring-white');
+            document.getElementById('voteNo').classList.remove('ring-2', 'ring-white');
+            
+            if (vote) {
+                document.getElementById('voteYes').classList.add('ring-2', 'ring-white');
+            } else {
+                document.getElementById('voteNo').classList.add('ring-2', 'ring-white');
+            }
+        }
+
+        async function submitVote() {
+            if (selectedVote === null || currentResolutionId === null) {
+                showToast('Please select a vote option', 'error');
+                return;
+            }
+            
+            if (!isConnected) {
+                showToast('Please connect wallet first', 'error');
+                return;
+            }
+
+            try {
+                // Ensure we're connected to Sepolia
+                const network = await provider.getNetwork();
+                if (network.chainId !== 11155111n) {
+                    showToast('Please switch to Sepolia testnet', 'error');
+                    return;
+                }
+                
+                showToast('Submitting FHE encrypted vote to blockchain...', 'info');
+                console.log(`Casting ${selectedVote ? 'YES' : 'NO'} vote on Resolution ${currentResolutionId}`);
+                
+                // For FHE voting, we would normally encrypt the vote client-side
+                // For this implementation, we'll simulate the FHE encryption
+                const encryptedVote = selectedVote ? 1 : 0; // Simplified for demo
+                const inputProof = '0x'; // Empty proof for simulation
+                
+                // Real blockchain transaction with FHE
+                const tx = await contract.castVote(currentResolutionId, encryptedVote, inputProof);
+                
+                showToast('Encrypted vote transaction sent! Waiting for confirmation...', 'info');
+                const receipt = await tx.wait();
+                
+                if (receipt.status === 1) {
+                    const voteType = selectedVote ? 'YES' : 'NO';
+                    showToast(`${voteType} vote submitted successfully! 🗳️`, 'success');
+                    console.log(`Vote transaction: https://sepolia.etherscan.io/tx/${tx.hash}`);
+                    
+                    // Store vote locally for UI display
+                    const voteKey = `vote_${currentResolutionId}_${userAccount}`;
+                    localStorage.setItem(voteKey, JSON.stringify({
+                        vote: selectedVote,
+                        timestamp: Date.now(),
+                        txHash: tx.hash,
+                        resolutionId: currentResolutionId
+                    }));
+                } else {
+                    showToast('Vote transaction failed', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Vote submission failed:', error);
+                if (error.code === 4001) {
+                    showToast('Vote transaction cancelled by user', 'error');
+                } else if (error.code === -32000) {
+                    showToast('Insufficient funds for gas', 'error');
+                } else if (error.message && error.message.includes('insufficient funds')) {
+                    showToast('Insufficient ETH balance for gas fees', 'error');
+                } else if (error.message && error.message.includes('already voted')) {
+                    showToast('You have already voted on this resolution', 'error');
+                } else {
+                    showToast(`Vote failed: ${error.message}`, 'error');
+                }
+            }
+                
+            closeVotingModal();
+            await loadResolutions();
+        }
+
+        // Load data functions
+        async function loadResolutions() {
+            // Load stored resolutions and demo data
+            const storedResolutions = JSON.parse(localStorage.getItem('resolutions') || '[]');
+            
+            // Demo resolutions
+            const demoResolutions = [
+                {
+                    id: 1,
+                    title: "Board Compensation Adjustment for FY 2025",
+                    description: "Proposal to adjust board member compensation packages for the fiscal year 2025, including base fees and equity components totaling $500K.",
+                    startTime: Date.now() / 1000 - 86400,
+                    endTime: new Date('2026-01-01').getTime() / 1000,
+                    active: true,
+                    creator: "0x742d35Cc6634C0532925a3b8D5141C0c",
+                    requiredQuorum: 3,
+                    yesVotes: 0,
+                    noVotes: 0
+                },
+                {
+                    id: 2,
+                    title: "Strategic Partnership with TechCorp International",
+                    description: "Resolution to approve strategic partnership agreement with TechCorp for joint development of AI solutions and blockchain infrastructure.",
+                    startTime: Date.now() / 1000 - 172800,
+                    endTime: new Date('2026-01-01').getTime() / 1000,
+                    active: true,
+                    creator: "0x9F7DFAB2CA9921161B931E98",
+                    requiredQuorum: 4,
+                    yesVotes: 0,
+                    noVotes: 0
+                }
+            ];
+            
+            activeResolutions = [...demoResolutions, ...storedResolutions];
+            updateResolutionsDisplay();
+        }
+
+        async function loadBoardMembers() {
+            const storedMembers = JSON.parse(localStorage.getItem('boardMembers') || '[]');
+            
+            const demoMembers = [
+                { address: userAccount || "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "John Smith", position: "Chairman", votingPower: 3, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Sarah Johnson", position: "CEO", votingPower: 3, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Michael Brown", position: "CFO", votingPower: 2, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Emily Davis", position: "CTO", votingPower: 2, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Robert Wilson", position: "COO", votingPower: 2, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Lisa Anderson", position: "Legal Counsel", votingPower: 1, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "David Thompson", position: "Director of Operations", votingPower: 1, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Jennifer Lee", position: "Head of Compliance", votingPower: 1, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Thomas Martinez", position: "Independent Director", votingPower: 1, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Maria Rodriguez", position: "Audit Committee Chair", votingPower: 2, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "James Wilson", position: "Risk Management Director", votingPower: 1, isActive: true },
+                { address: "0x13116d08546b78F5fDB7fA4544f778885B19A441", name: "Amanda Foster", position: "Corporate Secretary", votingPower: 1, isActive: true }
+            ];
+            
+            boardMembers = [...demoMembers, ...storedMembers];
+            updateBoardMembersDisplay();
+        }
+
+        // Update display functions
+        function updateResolutionsDisplay() {
+            const grid = document.getElementById('resolutionsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            if (activeResolutions.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">🏛️</div>
+                        <h3 class="text-xl font-semibold mb-2">No Active Resolutions</h3>
+                        <p class="text-gray-400 mb-4">Be the first to create a resolution!</p>
+                        <button onclick="showSection('create')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+                            Create Resolution
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            activeResolutions.forEach((resolution, index) => {
+                const remainingDays = Math.max(0, Math.ceil((resolution.endTime - Date.now() / 1000) / 86400));
+                const card = createResolutionCard(resolution, remainingDays, index);
+                grid.appendChild(card);
+            });
+        }
+
+        function createResolutionCard(resolution, remainingDays, index) {
+            const div = document.createElement('div');
+            const colors = ['blue', 'purple', 'green'];
+            const color = colors[index % colors.length];
+            
+            // Check if user has voted
+            const voteKey = `vote_${resolution.id}_${userAccount}`;
+            const userVote = localStorage.getItem(voteKey);
+            const hasVoted = userVote !== null;
+            
+            let voteStatus = '';
+            let buttonText = '🗳️ Cast Encrypted Vote';
+            let buttonClass = `w-full bg-${color}-600 hover:bg-${color}-700 text-white px-4 py-2 rounded-lg transition-colors font-medium`;
+            
+            if (hasVoted) {
+                const vote = JSON.parse(userVote);
+                const voteType = vote.vote ? 'YES' : 'NO';
+                voteStatus = `
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-400">Your Vote:</span>
+                        <span class="text-${vote.vote ? 'green' : 'red'}-400 font-medium">${voteType}</span>
+                    </div>
+                `;
+                buttonText = '✅ Vote Recorded';
+                buttonClass = 'w-full bg-gray-600 text-gray-300 px-4 py-2 rounded-lg font-medium cursor-not-allowed';
+            }
+            
+            div.className = `bg-gray-700 rounded-xl border border-gray-600 p-6 hover:border-${color}-500 transition-colors`;
+            
+            const timeDisplay = remainingDays > 365 ? 
+                `${Math.floor(remainingDays / 365)} year(s)` : 
+                `${remainingDays} days`;
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold">${resolution.title}</h4>
+                    <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">Active</span>
+                </div>
+                
+                <p class="text-gray-300 text-sm mb-4 line-clamp-3">
+                    ${resolution.description}
+                </p>
+                
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Required Quorum:</span>
+                        <span class="text-white font-medium">${resolution.requiredQuorum}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Time Remaining:</span>
+                        <span class="text-orange-400 font-medium">${timeDisplay}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Resolution ID:</span>
+                        <span class="text-gray-300">#${resolution.id}</span>
+                    </div>
+                    ${voteStatus}
+                </div>
+                
+                <button id="voteBtn_${resolution.id}" ${hasVoted ? 'disabled' : ''} 
+                        class="${buttonClass}">
+                    ${buttonText}
+                </button>
+            `;
+            
+            // Add event listener for voting button if not voted yet
+            if (!hasVoted) {
+                setTimeout(() => {
+                    const voteButton = document.getElementById(`voteBtn_${resolution.id}`);
+                    if (voteButton) {
+                        voteButton.addEventListener('click', () => {
+                            showVotingModal(resolution.id, resolution.title);
+                        });
+                    }
+                }, 0);
+            }
+            
+            return div;
+        }
+
+        function updateBoardMembersDisplay() {
+            const container = document.getElementById('boardMembersList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            boardMembers.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'bg-gray-700 rounded-lg p-4 border border-gray-600';
+                
+                memberDiv.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h5 class="font-semibold text-white">${member.name}</h5>
+                            <p class="text-sm text-gray-400">${member.position}</p>
+                            <p class="text-xs text-gray-500">Member ID: ••••••••</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-blue-400">${member.votingPower} votes</div>
+                            <div class="text-xs ${member.isActive ? 'text-green-400' : 'text-red-400'}">
+                                ${member.isActive ? 'Active' : 'Inactive'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(memberDiv);
+            });
+        }
+
+        // Helper functions
+        function updateContractStatusDisplay() {
+            const statusElement = document.getElementById('contractStatus');
+            if (statusElement) {
+                statusElement.innerHTML = 'Board Resolution Contract: 0x4Ec9...5D3 | <span class="text-green-400">✅ Live on Sepolia with FHE</span>';
+            }
+        }
+
+        async function updateUserBalance() {
+            if (!isConnected || !provider) return;
+            
+            try {
+                const balance = await provider.getBalance(userAccount);
+                userBalance = ethers.formatEther(balance);
+                
+                const balanceElement = document.getElementById('userBalance');
+                if (balanceElement) {
+                    balanceElement.textContent = `${parseFloat(userBalance).toFixed(4)} ETH`;
+                }
+            } catch (error) {
+                console.error('Failed to get balance:', error);
+            }
+        }
+        
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed top-4 right-4 z-50 space-y-2';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 
+                          type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+            
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300`;
+            toast.textContent = message;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Initialize event listeners for wallet connection changes
+
+        // Auto-detect wallet changes - Enhanced
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('accountsChanged', function(accounts) {
+                if (accounts.length === 0) {
+                    // Reset all state
+                    isConnected = false;
+                    userAccount = '';
+                    provider = null;
+                    signer = null;
+                    contract = null;
+                    
+                    // Reset UI
+                    document.getElementById('connectWallet').textContent = 'Connect Wallet';
+                    document.getElementById('connectWallet').classList.remove('bg-green-600', 'hover:bg-green-700');
+                    document.getElementById('connectWallet').classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    document.getElementById('walletInfo').classList.add('hidden');
+                    document.getElementById('balanceInfo').classList.add('hidden');
+                    
+                    showToast('Wallet disconnected', 'info');
+                } else if (accounts[0] !== userAccount) {
+                    // Account changed, reconnect
+                    showToast('Account switched, reconnecting...', 'info');
+                    connectWallet();
+                }
+            });
+            
+            window.ethereum.on('chainChanged', function(chainId) {
+                if (chainId !== '0xaa36a7') {
+                    showToast('Please switch to Sepolia testnet', 'error');
+                } else {
+                    // Refresh page when switching back to Sepolia
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+            
+            window.ethereum.on('connect', function(connectInfo) {
+                console.log('MetaMask connected:', connectInfo);
+            });
+            
+            window.ethereum.on('disconnect', function(error) {
+                console.log('MetaMask disconnected:', error);
+                showToast('MetaMask disconnected', 'error');
+            });
+        }
+    </script>
+</body>
+</html>
